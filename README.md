@@ -2,7 +2,7 @@
 This repository describes the development of a hybrid change detection and classification algorithm that was used to map coastal wetland changes in Blackwater, MD, USA.
 
 
-## Part 1: Vegetation and Water Indices Calculation
+ Part 1: Vegetation and Water Indices Calculation
 In Part 1, This R project calculates various vegetation and water indices across multiple datasets, primarily using reflectance data (e.g., Blue, Green, Red, NIR, SWIR1, SWIR2 bands). The indices calculated can be used for vegetation analysis, water detection, and soil analysis in environmental and remote sensing studies.
 
 Setup
