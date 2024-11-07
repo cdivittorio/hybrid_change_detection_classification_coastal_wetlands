@@ -1,3 +1,6 @@
+
+############Part 1########################
+
 # Check if required packages are installed, install if missing
 packages <- c("changepoint", "bcp", "strucchange", "segmented", "tree")
 install_if_missing <- packages[!(packages %in% installed.packages()[, "Package"])]
@@ -800,6 +803,10 @@ Data83 <- datasets_extended_75_84[[9]]
 Data84 <- datasets_extended_75_84[[10]]
 
 
+
+
+############Part 2########################
+
 # List of data frames
 data_list <- list(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10,
                   Data11, Data12, Data13, Data14, Data15, Data16, Data17, Data18, Data19, Data20,
@@ -1043,6 +1050,9 @@ for (i in seq_along(data_list)) {
             file = paste0("D:/Rabby/Blackwater/Analysis_Combined_Tide/Classification/13 Factors/", output_names[i], ".csv"), 
             row.names = FALSE)
 }
+
+
+############Part 3########################
 
 
 ## Uploading the NetCDF Files and Applying the Models
