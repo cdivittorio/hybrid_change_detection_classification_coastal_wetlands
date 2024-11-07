@@ -3,72 +3,57 @@ This repository describes the development of a hybrid change detection and class
 
 
  Part 1: Vegetation and Water Indices Calculation
-In Part 1, This R project calculates various vegetation and water indices across multiple datasets, primarily using reflectance data (e.g., Blue, Green, Red, NIR, SWIR1, SWIR2 bands). The indices calculated can be used for vegetation analysis, water detection, and soil analysis in environmental and remote sensing studies.
-
-Setup
-Prerequisites
+Description
+In this section, we calculate several vegetation and water indices across multiple datasets using reflectance data from different bands (Blue, Green, Red, NIR, SWIR1, and SWIR2). These indices are essential for vegetation, water detection, and soil analysis in environmental and remote sensing studies.
+Setup Prerequisites
 The following R packages are required:
-
-changepoint
-bcp
-strucchange
-segmented
-tree
-
+•	changepoint
+•	bcp
+•	strucchange
+•	segmented
+•	tree
+Please ensure these packages are installed for the analysis scripts to work correctly.
 Usage
-Data Preparation: CSV files for the datasets should be organized in the working directory with filenames following these patterns:
+1.	Data Preparation: Upload CSV files containing reflectance data for different wetland types in the working directory. Filenames should follow the specified patterns for consistency:
+o	Bareland: B_1.csv, B_2.csv, ..., B_8.csv
+o	Estuarine Emergent: E_1.csv, ..., E_8.csv
+o	Estuarine to Open Water: EO_1.csv, ..., EO_8.csv
+2.	Index Calculation: A function (compute_indices) calculates indices such as NDVI, NDWI, MNDWI, and others. Modify this function as needed to match column names in your data files (e.g., replace data$NIR, data$Red with appropriate column references).
+3.	Index Application: After uploading the datasets, run compute_indices on each, retaining only essential columns for analysis. Once calculated, the data can be saved or exported for further processing.
+Part 2: Change Point Detection and Data Splitting
+Description
+This section processes multiple datasets, applies a change point detection algorithm, and labels data for classification tasks. The change point analysis helps identify significant changes within the dataset, useful for wetland classification and understanding transitions in stability.
 
-Bareland: B_1.csv, B_2.csv, ..., B_8.csv
-Estuarine Emergent: E_1.csv, ..., E_8.csv
-Estuarine to Open Water: EO_1.csv, ..., EO_8.csv
-Index Calculation: The provided functions calculate indices including NDVI, NDWI, MNDWI, and more.
+Steps
+Data Loading and Initial Processing: CSV files are loaded into separate data frames (Data45 to Data74) to represent different datasets in the study.
 
-Function for Index Computation: The compute_indices function takes a dataset and calculates indices. To apply it:
-Replace data$NIR, data$Red, etc., with the appropriate columns in your data files.
+Column Selection: Use important_columns to specify essential indices and features (e.g., "Blue", "Green", "NDVI"). Only these columns are retained in each dataset for streamlined processing.
 
-Run Calculations on Multiple Datasets: Load your datasets, compute indices, and keep only the necessary columns:
-Save or Export: Once all calculations are completed, you may export the modified data for analysis.
+Change Point Detection:
 
-Part 2: In part 2 This script effectively handles multiple datasets for analysis and labeling tasks in R. Here's a summary of its key elements and functionality:
+Convert each dataset to a matrix format required for the e.divisive function.
+Apply e.divisive to detect significant shifts in the data, and store results in an output_list.
+Data Splitting and Labeling:
 
-1. Data Loading and Initial Processing
-Multiple CSV files are read into separate data frames (Data45 to Data74), each representing different datasets related to the wetland study.
-Lists are created to apply compute_indices, allowing each dataset to go through the same index computation process if defined in compute_indices.
-2. Column Selection
-The important_columns vector specifies key indices and features such as "Blue", "Green", "NDVI", etc. Only these columns are retained in each dataset to streamline processing and focus on relevant data.
-3. Matrix Conversion and Change Point Detection
-Each dataset is converted into a matrix format, which is required for change point detection using the e.divisive function.
-e.divisive is applied to identify significant shifts within the data. The results for each dataset are stored in an output list (output_list).
-4. Data Splitting and Labeling
-For datasets 50-54 and 65-74, each dataset is divided based on specific row ranges. The split_data function handles this by:
-Accepting row split points and associated labels.
-Adding labels for classification purposes.
-Writing specified sections (e.g., middle parts) to CSV files.
-5. Finalizing and Saving Labeled Data
-After processing, each dataset is re-assigned to its original variable name, allowing further analysis.
-The final CSV files (Data65b.csv, Data66b.csv, etc.) are saved with labeled subsets.
+For specific datasets (e.g., 50-54, 65-74), split data by row ranges using the split_data function, which adds classification labels.
+Export these labeled subsets (e.g., Data65b.csv, Data66b.csv) for analysis.
 
-Part 3: 
-Prediction and CSV Saving:
-
-Using model_rf, this loop makes predictions on a list of datasets (data_list) and saves each output as a CSV file. Each dataset corresponds to a prediction file, named according to the specified output_names.
-NetCDF File Processing:
-
-Opens and processes several NetCDF files representing different bands, extracts latitudes, longitudes, and times, and then converts band-specific data into data frames (b1_df, b2_df, etc.).
-Constructs a list (band_dfs) to hold each band’s data frame, making it easy to access each processed band individually.
-Index Calculation for Datasets:
-
-The calculate_indices function computes several vegetation indices for datasets (e.g., NDVI, NDWI), using a set of specific bands.
-This function is then applied to multiple datasets (T1 to T10).
-Threshold Sensitivity and Specificity Analysis:
-
-Calculates threshold-based classifications on a Vegetation dataset based on a range of thresholds (from 50% to 80%).
-Generates confusion matrices for each threshold and stores them in confusion_matrices.
-Extracts key performance metrics (e.g., sensitivity, specificity) and plots both Commission (CE) and Omission (OE) Errors against threshold values.
-Plotting CE and OE Errors:
-
-Creates individual plots for CE and OE errors using ggplot2, and a combined plot showing both errors across threshold values.
-Additional Notes:
-Libraries: Ensure the required libraries (caret, ncdf4, tidyverse, ggplot2, magrittr) are installed and loaded as they are essential for functions like nc_open, confusionMatrix, and ggplot.
-Function Definitions: Functions such as ndvi, ndwi, npcri, bsi, evi, and aweinsh should be defined or imported to avoid errors.
+Part 3: Prediction and Classification of Wetland Stability
+Description
+In this section, a trained Random Forest model is used to label the NetCDF data, identifying stable and unstable wetlands. The model is trained on datasets previously split and labeled by the change point algorithm. The model classifies the data, applies a threshold-based analysis to assess stability, and calculates classification metrics.
+Workflow
+1.	Model Training:
+o	Apply the Random Forest model to the NetCDF data, which contains the seven spectral bands (e.g., Blue, Green, Red, NIR, SWIR1, SWIR2).
+o	Train the model using the labeled data from Part 2 as input.
+2.	Prediction on NetCDF Data:
+o	Load NetCDF files representing the study area and extract latitudes, longitudes, and timestamps.
+o	Generate indices from the bands and apply the trained Random Forest model to classify each data point.
+o	Save predictions in separate CSV files based on the classification results.
+3.	Threshold-Based Analysis for Wetland Stability:
+o	Apply threshold values (e.g., 50% to 80%) on vegetation indices to classify wetlands as stable or unstable.
+o	Calculate sensitivity, specificity, and generate confusion matrices for each threshold.
+o	Store metrics in confusion_matrices, and plot Commission Error (CE) and Omission Error (OE) using ggplot2.
+4.	Plotting CE and OE Errors:
+o	Create separate plots for CE and OE errors across thresholds.
+o	Display both errors on a combined plot for a comprehensive view of stability classification accuracy.
 
