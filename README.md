@@ -79,3 +79,5 @@ First segment in time series and followed by stable class --> 	Unstable version 
 First segment in time series and followed by unstable class --> 	Same as the unstable segment that follows\
 Last segment in time series and preceded by stable class	--> Unstable version of the stable class that precedes\
 Last segment in time series and preceded by unstable class --> 	Same as the unstable segment that precedes
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14064109.svg)](https://doi.org/10.5281/zenodo.14064109)
